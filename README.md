@@ -63,7 +63,7 @@ The repository includes:
 
 Location:
 ```
-outputs/figures/
+figures/
 ├─ resnet50_loss_accuracy.png
 ├─ ddamfn_loss_accuracy.png
 └─ resemotenet_loss_accuracy.png
@@ -77,7 +77,7 @@ outputs/figures/
 
 Architecture diagrams for all three models are provided:
 ```
-outputs/figures/
+figures/
 ├─ resnet50_architecture.png
 ├─ ddamfn_architecture.png
 └─ resemotenet_architecture.png
@@ -90,6 +90,6 @@ outputs/figures/
 
 Example FER+ input images and corresponding facial expressions are available in:
 ```
-outputs/figures/
+figures/
 └─ ferplus_examples.png
 ```
