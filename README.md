@@ -1,7 +1,7 @@
 # FER+ Facial Expression Recognition Benchmark  
 **ResNet50 · DDAMFN · ResEmoteNet (PyTorch)**
 
-This project benchmarks three deep learning architectures on the **FER+ (FER2013Plus)** dataset using **identical image preprocessing and training protocol**.  
+This project benchmarks three deep learning architectures on the **FER+ (FER2013Plus)** dataset using **identical image preprocessing**.  
 The goal is a **fair comparison** of model performance for facial expression recognition.
 
 ---
@@ -38,6 +38,24 @@ All models are implemented and trained using **PyTorch**.
 - Learning Rate: configurable per experiment
 - Batch Size: configurable
 - Train / Test split: consistent across all models
+
+---
+
+## Data Preprocessing
+
+To ensure a fair comparison, the same preprocessing pipeline is applied to all models.
+The preprocessing is implemented using `torchvision.transforms` and includes data
+augmentation for training and deterministic transformations for evaluation.
+
+### Preprocessing Details
+
+- All images are resized to a fixed resolution of `128 × 128`.
+- Random horizontal flipping is applied to improve robustness to facial symmetry.
+- Color jitter introduces illumination and contrast variation.
+- Random rotation (±10°) and random cropping with padding are applied with a probability of 0.2 to simulate pose and spatial variability.
+- Images are normalized using ImageNet statistics to match pretrained backbone requirements.
+- Random erasing is used as a regularization technique to reduce overfitting by randomly occluding small regions of the face.
+- No model-specific or dataset-specific preprocessing differences are used.
 
 ---
 
