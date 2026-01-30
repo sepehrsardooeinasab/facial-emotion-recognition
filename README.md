@@ -64,7 +64,7 @@ augmentation for training and deterministic transformations for evaluation.
 | Model | Train Accuracy (%) | Test Accuracy (%) |
 |------|-------------------:|------------------:|
 | **ResNet50 (Pretrained)** | **97.41** | **83.77** |
-| **DDAMFN** | 94.80 | 81.53 |
+| **DDAMFN** | 94.80 | 82.15 |
 | **ResEmoteNet** | 94.99 | 80.63 |
 
 > ResNet50 achieves the highest generalization performance on FER+, while DDAMFN and ResEmoteNet provide competitive results with lighter or specialized architectures.
