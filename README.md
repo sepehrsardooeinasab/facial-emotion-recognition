@@ -49,11 +49,9 @@ augmentation for training and deterministic transformations for evaluation.
 
 ### Preprocessing Details
 
-- All images are resized to a fixed resolution of `128 × 128`.
 - Random horizontal flipping is applied to improve robustness to facial symmetry.
 - Color jitter introduces illumination and contrast variation.
 - Random rotation (±10°) and random cropping with padding are applied with a probability of 0.2 to simulate pose and spatial variability.
-- Images are normalized using ImageNet statistics to match pretrained backbone requirements.
 - Random erasing is used as a regularization technique to reduce overfitting by randomly occluding small regions of the face.
 - No model-specific or dataset-specific preprocessing differences are used.
 
