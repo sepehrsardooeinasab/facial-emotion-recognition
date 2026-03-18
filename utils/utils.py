@@ -12,15 +12,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torchvision import models
 
-def ResNet(num_classes=8, pretrained=True):
-    if pretrained:
-        net = torch.hub.load("pytorch/vision", "resnet50", weights="IMAGENET1K_V2")
-    else:
-        net = torch.hub.load("pytorch/vision", "resnet50")
-    final_in_ftrs = net.fc.in_features
-    net.fc = nn.Linear(final_in_ftrs, num_classes)
-    return net
-
 class AttentionLoss(nn.Module):
     def __init__(self, ):
         super(AttentionLoss, self).__init__()

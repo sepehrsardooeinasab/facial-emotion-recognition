@@ -1,8 +1,7 @@
-# FER+ Facial Expression Recognition Benchmark  
-**ResNet50 · DDAMFN · ResEmoteNet (PyTorch)**
+# Facial Emotion Recognition System  
+**ResNet50 · DDAMFN · ResEmoteNet (PyTorch, FastAPI, Docker)**
 
-This project benchmarks three deep learning architectures on the **FER+ (FER2013Plus)** dataset using **identical image preprocessing**.  
-The goal is a **fair comparison** of model performance for facial expression recognition.
+This project benchmarks multiple deep learning architectures on the **FER+ (FER2013Plus)** dataset and deploys the best-performing model as a **REST API for real-time emotion recognition**.
 
 ---
 
@@ -10,56 +9,34 @@ The goal is a **fair comparison** of model performance for facial expression rec
 
 **FER2013Plus (FER+)**
 - Source: https://www.kaggle.com/datasets/subhaditya/fer2013plus
-- Grayscale facial images
-- Resolution: 48 × 48
-- 8 emotion classes (as defined in FER+)
+- Grayscale facial images (48 × 48)
+- 8 emotion classes
 
 ---
 
 ## Models Evaluated
 
 - **ResNet50 (Pretrained)**  
-  https://docs.pytorch.org/vision/main/models/generated/torchvision.models.resnet50.html
-
 - **DDAMFN (Dual Dynamic Attention Model with Feature Normalization)**  
-  https://github.com/SainingZhang/DDAMFN/tree/main
+- **ResEmoteNet**
 
-- **ResEmoteNet**  
-  https://github.com/ArnabKumarRoy02/ResEmoteNet
-
-All models are implemented and trained using **PyTorch**.
-
----
-
-## Training Setup
-
-- Framework: PyTorch
-- Loss Function: Cross-Entropy Loss
-- Learning Rate: configurable per experiment
-- Batch Size: configurable
-- Train / Test split: consistent across all models
+All models are trained and evaluated using **PyTorch** under a unified preprocessing pipeline.
 
 ---
 
 ## Data Preprocessing
 
-To ensure a fair comparison, the same preprocessing pipeline is applied to all models.
-The preprocessing is implemented using `torchvision.transforms` and includes data
-augmentation for training and deterministic transformations for evaluation.
+To ensure fair comparison, all models use identical preprocessing:
 
-### Preprocessing Details
-
-- Random horizontal flipping is applied to improve robustness to facial symmetry.
-- Color jitter introduces illumination and contrast variation.
-- Random rotation (±10°) and random cropping with padding are applied with a probability of 0.2 to simulate pose and spatial variability.
-- Random erasing is used as a regularization technique to reduce overfitting by randomly occluding small regions of the face.
-- No model-specific or dataset-specific preprocessing differences are used.
+- Random horizontal flip  
+- Color jitter (illumination variation)  
+- Random rotation (±10°) and cropping (p=0.2)  
+- Random erasing for regularization  
+- Standard normalization (ImageNet mean/std)  
 
 ---
 
 ## Performance Results
-
-**Final Train and Test Accuracy**
 
 | Model | Train Accuracy (%) | Test Accuracy (%) |
 |------|-------------------:|------------------:|
@@ -67,45 +44,120 @@ augmentation for training and deterministic transformations for evaluation.
 | **DDAMFN** | 94.80 | 82.15 |
 | **ResEmoteNet** | 94.99 | 80.63 |
 
-> ResNet50 achieves the highest generalization performance on FER+, while DDAMFN and ResEmoteNet provide competitive results with lighter or specialized architectures.
+> ResNet50 achieved the best generalization performance and was selected for deployment.
 
 ---
 
-## Training Curves
+## Model Deployment
+
+The best-performing model (ResNet50) is deployed as a **REST API** using **FastAPI** and containerized with **Docker**.
+
+### API Endpoint
+
+**POST `/predict`**
+
+**Input:**  
+- Image file (face)
+
+**Output:**
+```json
+{
+  "class_index": 7,
+  "class_name": "Surprise",
+  "confidence": 0.92
+}
+````
+
+---
+
+## 🚀 Running the Project
+
+### 1. Download Pretrained Weights
+
+Download the trained model weights:
+
+👉 [https://drive.google.com/file/d/1tEcJ25IcZ3IVfUnYxrWTfPa9W_tsQAE5/view?usp=sharing](https://drive.google.com/file/d/1tEcJ25IcZ3IVfUnYxrWTfPa9W_tsQAE5/view?usp=sharing)
+
+Place the file in:
+
+```
+weights/best_model.pth
+```
+
+---
+
+### 2. Run with Docker
+
+```bash
+docker build -t fer-api .
+docker run -p 8000:8000 fer-api
+```
+
+---
+
+## 🚀 Test the API
+
+Open the interactive API documentation:
+
+```
+http://127.0.0.1:8000/docs
+```
+
+Or send a request via command line:
+
+```bash
+curl -X POST "http://127.0.0.1:8000/predict" \
+  -F "file=@path/to/image.png"
+```
+
+---
+
+## ⚙️ Training Details
+
+* **Framework:** PyTorch
+
+* **Loss Function:** Cross-Entropy Loss
+
+* **Optimizer:** SGD with momentum
+
+* **Learning Rate Scheduling:** Exponential / Step-based decay
+
+* **Regularization:** Data augmentation (flip, rotation, cropping, color jitter, random erasing)
+
+* **Early Stopping:** Based on validation accuracy
+
+* **Batch Size:** Configurable
+
+* **Image Size:** 224 × 224
+
+* **Dataset:** FER2013Plus (FER+)
+
+* **Evaluation:**
+
+  * Training and validation accuracy/loss per epoch
+  * Confusion matrix on test set
+
+---
+
+## 📊 Visualizations
 
 The repository includes:
-- Per-epoch **training and validation loss**
-- Per-epoch **training and validation accuracy**
+
+* Training and validation loss/accuracy curves across epochs
+* Confusion matrices for model evaluation
+* Model architecture diagrams for each network
 
 Location:
+
 ```
 figures/
-├─ resnet50_loss_accuracy.png
-├─ ddamfn_loss_accuracy.png
-└─ resemotenet_loss_accuracy.png
 ```
-
-
 
 ---
 
-## Model Architectures
+## 📌 Summary
 
-Architecture diagrams for all three models are provided:
-```
-figures/
-├─ resnet50_architecture.png
-├─ ddamfn_architecture.png
-└─ resemotenet_architecture.png
-```
-
-
----
-
-## Example FER+ Images
-
-Example FER+ input images and corresponding facial expressions are available in:
-```
-figures/
-└─ ferplus_examples.png
-```
+* Benchmarked multiple deep learning architectures on the FER+ dataset
+* Achieved up to **83.77% test accuracy** using a pretrained ResNet50 model
+* Designed a reproducible training and evaluation pipeline
+* Deployed the best-performing model as a **containerized REST API** using FastAPI and Docker for real-time inference
